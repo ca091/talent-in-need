@@ -6,6 +6,7 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/ui'
   ],
+  css: ['~/assets/css/main.css'],
   sourcemap: false,
   devServer: {
     host: '0.0.0.0',
