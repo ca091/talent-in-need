@@ -1,41 +1,25 @@
-# Personal English Learning
+# Wordbook Exporter
 
-This context describes a personal learning system for building general English through news reading, everyday listening, and spoken recall.
+This context describes a client-side utility that converts a `kajweb/dict` wordbook archive into an Anki import file.
 
 ## Language
 
-**Target competence**:
-Reading general-interest English news without translation, understanding everyday English dialogue without subtitles, and giving an oral recap of the meaning.
-_Avoid_: Learn English, improve English
+**Wordbook archive**:
+A ZIP file containing a JSON or newline-delimited JSON word list in the `kajweb/dict` data shape.
+_Avoid_: Study session, learning plan
 
-**Current proficiency**:
-The learner's demonstrated ability in authentic material. It is currently approximately CEFR A2: Level 2 news is comfortable while Level 3 requires frequent word lookup.
-_Avoid_: Beginner level, vocabulary size
+**Word entry**:
+A normalized record containing the word, rank, phonetic transcription, meaning, example sentence, translation, and source book identifier.
+_Avoid_: Review state, learned word
 
-**Vocabulary curriculum**:
-The selected `kajweb/dict` word list that supplies the planned sequence of vocabulary study. Encountered words in authentic material do not automatically enter the curriculum.
-_Avoid_: Dictionary, complete vocabulary
+**Wordbook view**:
+The complete imported wordbook displayed in client-side pages of 50 entries. Pagination changes only what is visible and never limits export scope.
+_Avoid_: Daily words, released vocabulary
 
-**Authentic material**:
-An English news article or everyday audio/video recording used to practise and assess transfer beyond isolated vocabulary study.
-_Avoid_: Word list, translation exercise
+**Anki export**:
+A tab-separated file containing every normalized word entry in the current wordbook, ready for Anki to import.
+_Avoid_: Backup, progress export
 
-**Oral recap**:
-A spoken explanation, in the learner's own English, of the main ideas in an authentic material.
-_Avoid_: Reading aloud, recitation, translation
-
-**Study session**:
-A sustainable 30-minute daily learning period, with speaking activities scheduled after 20:00.
-_Avoid_: Study streak, spare-time learning
-
-**Listening-first phase**:
-The initial phase prioritizes connecting spoken English to meaning because the learner currently understands roughly 10% of the selected Level 3 news audio without text.
-_Avoid_: More vocabulary first, audio background
-
-**Review card**:
-A small prompt that tests recall of one English word or expression and schedules the next review; it is not a complete dictionary entry.
-_Avoid_: Word dump, dictionary page
-
-**Audio material**:
-Spoken English from a news or everyday-dialogue source used for repeated listen–read–listen practice, separate from synthetic pronunciation on review cards.
-_Avoid_: Pronunciation clip, word audio
+**Local processing**:
+ZIP parsing, normalization, pagination, and export all happen in the browser. Imported wordbooks are persisted in IndexedDB and addressed by a local `/vocab/:id` route; no learning state is stored and nothing is uploaded.
+_Avoid_: Account storage, cloud sync
