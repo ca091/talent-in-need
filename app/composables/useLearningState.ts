@@ -36,7 +36,15 @@ type LearningState = {
 const STORAGE_KEY = 'listening-desk-v1'
 const START_KEY = 'listening-desk-start'
 
-const sampleWords: Word[] = [
+type SampleWordRow = [
+  word: string,
+  phonetic: string,
+  meaning: string,
+  example: string,
+  exampleCn: string,
+]
+
+const sampleWordRows: SampleWordRow[] = [
   ['retirement', '/rɪˈtaɪəmənt/', 'n. 退休；退出', 'He announced his retirement from international football.', '他宣布退出国际足球比赛。'],
   ['emotional', '/ɪˈməʊʃənəl/', 'adj. 情绪激动的；有感染力的', 'It was an emotional moment for the fans.', '这对球迷来说是一个令人动容的时刻。'],
   ['extraordinary', '/ɪkˈstrɔːdənəri/', 'adj. 非凡的；特别的', 'She had an extraordinary career.', '她拥有一段非凡的职业生涯。'],
@@ -45,7 +53,9 @@ const sampleWords: Word[] = [
   ['commentator', '/ˈkɒmənteɪtə(r)/', 'n. 评论员；解说员', 'The commentator described the final moments.', '解说员描述了最后的时刻。'],
   ['era', '/ˈɪərə/', 'n. 时代；年代', 'The player marked the end of an era.', '这名球员标志着一个时代的结束。'],
   ['announce', '/əˈnaʊns/', 'v. 宣布；通知', 'The company announced a new plan.', '公司宣布了一项新计划。'],
-].map(([word, phonetic, meaning, example, exampleCn], index) => ({
+]
+
+const sampleWords: Word[] = sampleWordRows.map(([word, phonetic, meaning, example, exampleCn], index) => ({
   id: `demo-${word}`,
   word,
   phonetic,
