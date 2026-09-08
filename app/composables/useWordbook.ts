@@ -21,13 +21,30 @@ export type StoredWordbook = Wordbook & {
   importedAt: string
 }
 
+export type StoredWordbookSummary = {
+  storageId: string
+  id: string
+  wordCount: number
+  importedAt: string
+}
+
 const DATABASE_NAME = 'wordbook-exporter'
-const DATABASE_VERSION = 1
+const DATABASE_VERSION = 2
 const WORDBOOK_STORE = 'wordbooks'
+const WORDBOOK_INDEX_STORE = 'wordbook-index'
 
 function createStorageId() {
   if (typeof crypto.randomUUID === 'function') return crypto.randomUUID()
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`
+}
+
+function summarizeWordbook(wordbook: StoredWordbook): StoredWordbookSummary {
+  return {
+    storageId: wordbook.storageId,
+    id: wordbook.id,
+    wordCount: wordbook.words.length,
+    importedAt: wordbook.importedAt,
+  }
 }
 
 function openDatabase(): Promise<IDBDatabase> {
@@ -38,8 +55,23 @@ function openDatabase(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(DATABASE_NAME, DATABASE_VERSION)
     request.onupgradeneeded = () => {
-      if (!request.result.objectStoreNames.contains(WORDBOOK_STORE)) {
-        request.result.createObjectStore(WORDBOOK_STORE, { keyPath: 'storageId' })
+      const database = request.result
+      const transaction = request.transaction
+      const wordbookStore = database.objectStoreNames.contains(WORDBOOK_STORE)
+        ? transaction?.objectStore(WORDBOOK_STORE)
+        : database.createObjectStore(WORDBOOK_STORE, { keyPath: 'storageId' })
+
+      if (!database.objectStoreNames.contains(WORDBOOK_INDEX_STORE)) {
+        const indexStore = database.createObjectStore(WORDBOOK_INDEX_STORE, { keyPath: 'storageId' })
+        const cursorRequest = wordbookStore?.openCursor()
+        if (cursorRequest) {
+          cursorRequest.onsuccess = () => {
+            const cursor = cursorRequest.result
+            if (!cursor) return
+            indexStore.put(summarizeWordbook(cursor.value as StoredWordbook))
+            cursor.continue()
+          }
+        }
       }
     }
     request.onsuccess = () => resolve(request.result)
@@ -145,8 +177,9 @@ export function useWordbook() {
 
     try {
       await new Promise<void>((resolve, reject) => {
-        const transaction = database.transaction(WORDBOOK_STORE, 'readwrite')
+        const transaction = database.transaction([WORDBOOK_STORE, WORDBOOK_INDEX_STORE], 'readwrite')
         transaction.objectStore(WORDBOOK_STORE).put(stored)
+        transaction.objectStore(WORDBOOK_INDEX_STORE).put(summarizeWordbook(stored))
         transaction.oncomplete = () => resolve()
         transaction.onerror = () => reject(new Error('词书无法保存到浏览器，请检查可用存储空间。'))
         transaction.onabort = () => reject(new Error('词书保存已中止，请重新导入。'))
@@ -174,5 +207,22 @@ export function useWordbook() {
     }
   }
 
-  return { importZip, exportAnki, saveWordbook, getWordbook }
+  async function listWordbooks(): Promise<StoredWordbookSummary[]> {
+    const database = await openDatabase()
+
+    try {
+      const summaries = await new Promise<StoredWordbookSummary[]>((resolve, reject) => {
+        const request = database.transaction(WORDBOOK_INDEX_STORE, 'readonly')
+          .objectStore(WORDBOOK_INDEX_STORE)
+          .getAll()
+        request.onsuccess = () => resolve(request.result as StoredWordbookSummary[])
+        request.onerror = () => reject(new Error('无法读取已导入的词书列表。'))
+      })
+      return summaries.sort((left, right) => right.importedAt.localeCompare(left.importedAt))
+    } finally {
+      database.close()
+    }
+  }
+
+  return { importZip, exportAnki, saveWordbook, getWordbook, listWordbooks }
 }

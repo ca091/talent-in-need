@@ -1,9 +1,30 @@
 <script setup lang="ts">
-const { importZip, saveWordbook } = useWordbook()
+import type { StoredWordbookSummary } from '~/composables/useWordbook'
+
+const { importZip, saveWordbook, listWordbooks } = useWordbook()
 const toast = useToast()
 const selectedFile = ref<File | null>(null)
+const savedWordbooks = shallowRef<StoredWordbookSummary[]>([])
+const loadingWordbooks = ref(true)
 const pending = ref(false)
 const error = ref('')
+
+function formatImportedAt(value: string) {
+  return new Intl.DateTimeFormat('zh-CN', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  }).format(new Date(value))
+}
+
+async function loadSavedWordbooks() {
+  try {
+    savedWordbooks.value = await listWordbooks()
+  } catch (reason: unknown) {
+    error.value = reason instanceof Error ? reason.message : '无法读取已导入的词书列表。'
+  } finally {
+    loadingWordbooks.value = false
+  }
+}
 
 watch(selectedFile, async (file) => {
   if (!file) return
@@ -27,6 +48,8 @@ watch(selectedFile, async (file) => {
     pending.value = false
   }
 })
+
+onMounted(loadSavedWordbooks)
 </script>
 
 <template>
@@ -47,16 +70,44 @@ watch(selectedFile, async (file) => {
         :description="error"
       />
 
-      <UFileUpload
-        v-model="selectedFile"
-        accept=".zip,application/zip"
-        variant="area"
-        label="选择或拖入词书 ZIP"
-        description="压缩包中需要包含 kajweb/dict 格式的 JSON 词书文件"
-        :disabled="pending"
-        reset
-        class="min-h-56 w-full"
-      />
+      <section v-if="loadingWordbooks" class="space-y-3">
+        <USkeleton class="h-7 w-32" />
+        <USkeleton class="h-24 w-full" />
+      </section>
+
+      <section v-else-if="savedWordbooks.length" class="space-y-3">
+        <h2 class="font-display text-2xl">已导入词书</h2>
+        <UCard
+          v-for="wordbook in savedWordbooks"
+          :key="wordbook.storageId"
+          :ui="{ body: 'flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between' }"
+        >
+          <div>
+            <p>{{ wordbook.id }}</p>
+            <p class="mt-1 text-muted">
+              {{ wordbook.wordCount.toLocaleString() }} 个词条 · {{ formatImportedAt(wordbook.importedAt) }}
+            </p>
+          </div>
+          <UButton :to="`/vocab/${wordbook.storageId}`" trailing-icon="i-lucide-arrow-right">
+            进入词表
+          </UButton>
+        </UCard>
+      </section>
+
+      <section class="space-y-3">
+        <h2 v-if="savedWordbooks.length" class="font-display text-2xl">导入新词书</h2>
+
+        <UFileUpload
+          v-model="selectedFile"
+          accept=".zip,application/zip"
+          variant="area"
+          label="选择或拖入词书 ZIP"
+          description="压缩包中需要包含 kajweb/dict 格式的 JSON 词书文件"
+          :disabled="pending"
+          reset
+          class="min-h-56 w-full"
+        />
+      </section>
 
       <UAlert
         color="info"

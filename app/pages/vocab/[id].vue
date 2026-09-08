@@ -11,7 +11,7 @@ const status = ref<'loading' | 'ready' | 'missing' | 'error'>('loading')
 const error = ref('')
 const page = ref(1)
 const showAnkiSetup = ref(false)
-const speakingWordId = ref<string | null>(null)
+const speakingTarget = ref<string | null>(null)
 let activeUtterance: SpeechSynthesisUtterance | null = null
 
 const frontTemplate = `<div>{{Word}}</div>`
@@ -130,10 +130,10 @@ function stopSpeaking() {
   if (!import.meta.client || !('speechSynthesis' in window)) return
   window.speechSynthesis.cancel()
   activeUtterance = null
-  speakingWordId.value = null
+  speakingTarget.value = null
 }
 
-function speak(word: Word) {
+function speak(text: string, target: string) {
   if (!import.meta.client || !('speechSynthesis' in window)) {
     toast.add({
       title: '当前浏览器不支持朗读',
@@ -143,24 +143,24 @@ function speak(word: Word) {
     return
   }
 
-  if (speakingWordId.value === word.id) {
+  if (speakingTarget.value === target) {
     stopSpeaking()
     return
   }
 
   window.speechSynthesis.cancel()
-  const utterance = new SpeechSynthesisUtterance(word.word)
+  const utterance = new SpeechSynthesisUtterance(text)
   utterance.lang = 'en-US'
   utterance.rate = 0.9
   const clearActiveWord = () => {
     if (activeUtterance !== utterance) return
     activeUtterance = null
-    speakingWordId.value = null
+    speakingTarget.value = null
   }
   utterance.onend = clearActiveWord
   utterance.onerror = clearActiveWord
   activeUtterance = utterance
-  speakingWordId.value = word.id
+  speakingTarget.value = target
   window.speechSynthesis.speak(utterance)
 }
 
@@ -299,14 +299,29 @@ onBeforeUnmount(stopSpeaking)
                 </div>
               </template>
               <template #speech-cell="{ row }">
-                <UButton
-                  :icon="speakingWordId === row.original.id ? 'i-lucide-square' : 'i-lucide-volume-2'"
-                  color="neutral"
-                  variant="ghost"
-                  size="sm"
-                  :aria-label="speakingWordId === row.original.id ? `停止朗读 ${row.original.word}` : `朗读 ${row.original.word}`"
-                  @click="speak(row.original)"
-                />
+                <div class="flex items-center gap-1">
+                  <UButton
+                    :icon="speakingTarget === `${row.original.id}:word` ? 'i-lucide-square' : 'i-lucide-volume-2'"
+                    color="neutral"
+                    variant="ghost"
+                    size="sm"
+                    :aria-label="speakingTarget === `${row.original.id}:word` ? `停止朗读 ${row.original.word}` : `朗读单词 ${row.original.word}`"
+                    @click="speak(row.original.word, `${row.original.id}:word`)"
+                  >
+                    单词
+                  </UButton>
+                  <UButton
+                    v-if="row.original.example"
+                    :icon="speakingTarget === `${row.original.id}:example` ? 'i-lucide-square' : 'i-lucide-volume-2'"
+                    color="neutral"
+                    variant="ghost"
+                    size="sm"
+                    :aria-label="speakingTarget === `${row.original.id}:example` ? '停止朗读例句' : `朗读例句 ${row.original.example}`"
+                    @click="speak(row.original.example, `${row.original.id}:example`)"
+                  >
+                    例句
+                  </UButton>
+                </div>
               </template>
             </UTable>
           </div>
