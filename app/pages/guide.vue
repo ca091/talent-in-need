@@ -35,9 +35,9 @@ async function handleRestore(event: Event) {
     <header class="flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-end">
       <div>
         <UBadge color="primary" variant="soft">ANKI · FROM ZERO</UBadge>
-        <h1 class="mt-5 font-display text-5xl leading-none tracking-[-0.05em] text-highlighted sm:text-6xl">第一次使用，<br><em class="text-primary">照着走就好。</em></h1>
+        <h1 class="mt-5 font-display text-5xl leading-none tracking-tighter sm:text-6xl">第一次使用，<br><em class="text-primary">照着走就好。</em></h1>
       </div>
-      <p class="text-sm leading-6 text-muted">Mac 制卡<br>iPhone 复习</p>
+      <p class="leading-6 text-muted">Mac 制卡<br>iPhone 复习</p>
     </header>
 
     <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
@@ -46,8 +46,8 @@ async function handleRestore(event: Event) {
           <span class="font-display text-xl italic text-primary">{{ String(index + 1).padStart(2, '0') }}</span>
           <UIcon :name="step.icon" class="size-5 text-muted" />
         </div>
-        <h2 class="mt-5 font-display text-2xl text-highlighted">{{ step.title }}</h2>
-        <p class="mt-3 flex-1 text-sm leading-6 text-muted">{{ step.text }}</p>
+        <h2 class="mt-5 font-display text-2xl">{{ step.title }}</h2>
+        <p class="mt-3 flex-1 leading-6 text-muted">{{ step.text }}</p>
         <code v-if="step.code" class="mt-4 whitespace-pre-line rounded-md bg-muted px-3 py-2 text-xs text-toned">{{ step.code }}</code>
         <UButton v-if="step.link" :to="step.link" target="_blank" color="primary" variant="link" trailing-icon="i-lucide-external-link" class="mt-3 self-start">{{ step.linkLabel }}</UButton>
       </UCard>
@@ -58,8 +58,8 @@ async function handleRestore(event: Event) {
 
     <UCard class="bg-primary/10" :ui="{ body: 'flex flex-col gap-5 p-6 sm:flex-row sm:items-center' }">
       <div class="flex-1">
-        <h2 class="font-semibold text-highlighted">换设备前，先备份工作台</h2>
-        <p class="mt-1 text-sm leading-6 text-muted">词书和新闻记录保存在当前浏览器。Anki 卡片另由 AnkiWeb 同步。</p>
+        <h2 class="font-semibold">换设备前，先备份工作台</h2>
+        <p class="mt-1 leading-6 text-muted">词书和新闻记录保存在当前浏览器。Anki 卡片另由 AnkiWeb 同步。</p>
       </div>
       <div class="flex flex-wrap gap-2">
         <UButton color="neutral" variant="outline" icon="i-lucide-download" @click="exportBackup">导出 JSON 备份</UButton>

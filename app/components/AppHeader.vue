@@ -13,7 +13,7 @@ const { exportBackup } = useLearningState()
           <i class="h-5 w-0.75 rounded-full bg-current" />
         </span>
         <span>
-          <strong class="block font-display text-lg leading-none tracking-tight text-highlighted">Listening Desk</strong>
+          <strong class="block font-display text-lg leading-none tracking-tight">Listening Desk</strong>
           <small class="mt-1 block text-[10px] tracking-[0.16em] text-muted">耳朵先行</small>
         </span>
       </NuxtLink>

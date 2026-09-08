@@ -52,7 +52,7 @@ function handleExport() {
     <header class="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
       <div>
         <UBadge color="primary" variant="soft">VOCABULARY WORKBENCH</UBadge>
-        <h1 class="mt-5 font-display text-5xl leading-none tracking-[-0.05em] text-highlighted sm:text-6xl">词汇，不是终点。<br><em class="text-primary">是听力的扶手。</em></h1>
+        <h1 class="mt-5 font-display text-5xl leading-none tracking-[-0.05em] sm:text-6xl">词汇，不是终点。<br><em class="text-primary">是听力的扶手。</em></h1>
       </div>
       <div class="flex flex-wrap gap-2">
         <input ref="fileInput" class="hidden" type="file" accept=".zip,.json,.ndjson,.txt" @change="handleImport">
@@ -67,8 +67,8 @@ function handleExport() {
     <UCard v-if="!state.words.length" variant="subtle" :ui="{ body: 'flex flex-col items-start gap-5 p-8 sm:flex-row sm:items-center' }">
       <span class="grid size-12 shrink-0 place-items-center rounded-full bg-primary/10"><UIcon name="i-lucide-file-plus-2" class="size-6 text-primary" /></span>
       <div class="flex-1">
-        <h2 class="font-display text-2xl text-highlighted">把 kajweb/dict 的词书导进来</h2>
-        <p class="mt-2 text-sm leading-6 text-muted">支持 ZIP、JSON、NDJSON。应用会逐行解析、按词形去重，并先释放 100 个词。</p>
+        <h2 class="font-display text-2xl">把 kajweb/dict 的词书导进来</h2>
+        <p class="mt-2 leading-6 text-muted">支持 ZIP、JSON、NDJSON。应用会逐行解析、按词形去重，并先释放 100 个词。</p>
       </div>
       <UButton icon="i-lucide-folder-open" @click="fileInput?.click()">选择文件</UButton>
     </UCard>
@@ -101,9 +101,9 @@ function handleExport() {
             :aria-label="`${todayDone.includes(word.id) ? '取消完成' : '标记完成'} ${word.word}`"
             @click="markWord(word)"
           />
-          <div><p class="font-display text-xl text-highlighted">{{ word.word }}</p><p class="mt-1 text-xs text-primary">{{ word.phonetic || '—' }}</p></div>
-          <p class="text-sm leading-6 text-default">{{ word.meaning }}</p>
-          <div class="sm:col-start-2 sm:col-end-4 lg:col-auto"><p class="text-sm leading-6 text-toned">{{ word.example || '导入数据没有例句' }}</p><p class="mt-1 text-xs text-muted">{{ word.exampleCn }}</p></div>
+          <div><p class="font-display text-xl">{{ word.word }}</p><p class="mt-1 text-xs text-primary">{{ word.phonetic || '—' }}</p></div>
+          <p class="leading-6">{{ word.meaning }}</p>
+          <div class="sm:col-start-2 sm:col-end-4 lg:col-auto"><p class="leading-6 text-toned">{{ word.example || '导入数据没有例句' }}</p><p class="mt-1 text-xs text-muted">{{ word.exampleCn }}</p></div>
         </UCard>
       </div>
 

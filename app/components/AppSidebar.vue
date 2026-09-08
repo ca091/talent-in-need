@@ -29,7 +29,7 @@ const items = [
 
       <div class="mt-8 hidden border-t border-muted pt-6 lg:block">
         <p class="text-[10px] font-bold tracking-[0.16em] text-muted">本周听力信号</p>
-        <p class="mt-3 font-display text-4xl text-highlighted">{{ averageReplay || '—' }}<small class="text-base text-primary">%</small></p>
+        <p class="mt-3 font-display text-4xl">{{ averageReplay || '—' }}<small class="text-base text-primary">%</small></p>
         <UProgress :model-value="averageReplay" color="primary" size="sm" class="mt-3" />
         <p class="mt-2 text-xs text-muted">再次裸听理解率</p>
       </div>

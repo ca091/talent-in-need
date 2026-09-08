@@ -23,6 +23,10 @@
 
   body {
     min-height: 100%;
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    line-height: var(--text-sm--line-height);
+    font-weight: var(--font-weight-normal);
     background: var(--ui-bg-muted);
     color: var(--ui-text);
   }

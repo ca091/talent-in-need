@@ -38,9 +38,9 @@ function submit() {
     <header class="flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-end">
       <div>
         <UBadge color="primary" variant="soft">LISTENING LOG</UBadge>
-        <h1 class="mt-5 font-display text-5xl leading-none tracking-[-0.05em] text-highlighted sm:text-6xl">让每一次<br><em class="text-primary">听不懂</em>留下线索。</h1>
+        <h1 class="mt-5 font-display text-5xl leading-none tracking-[-0.05em] sm:text-6xl">让每一次<br><em class="text-primary">听不懂</em>留下线索。</h1>
       </div>
-      <p class="text-sm leading-6 text-muted">先裸听，不要暂停。<br>记录比感觉可靠。</p>
+      <p class="leading-6 text-muted">先裸听，不要暂停。<br>记录比感觉可靠。</p>
     </header>
 
     <UAlert v-if="saved" color="success" variant="soft" icon="i-lucide-circle-check" title="已保存这次听读" />
@@ -71,15 +71,15 @@ function submit() {
           <section class="space-y-5">
             <p class="text-[10px] font-bold tracking-[0.16em] text-primary">02 · 三次听力</p>
             <div class="space-y-2">
-              <div class="flex justify-between text-sm"><span class="text-muted">第一次裸听</span><strong class="text-primary">{{ form.firstListen }}%</strong></div>
+              <div class="flex justify-between"><span class="text-muted">第一次裸听</span><strong class="text-primary">{{ form.firstListen }}%</strong></div>
               <USlider v-model="form.firstListen" :min="0" :max="100" />
             </div>
             <div class="space-y-2">
-              <div class="flex justify-between text-sm"><span class="text-muted">看文本后</span><strong class="text-primary">{{ form.afterText }}%</strong></div>
+              <div class="flex justify-between"><span class="text-muted">看文本后</span><strong class="text-primary">{{ form.afterText }}%</strong></div>
               <USlider v-model="form.afterText" :min="0" :max="100" />
             </div>
             <div class="space-y-2">
-              <div class="flex justify-between text-sm"><span class="text-muted">再次裸听</span><strong class="text-primary">{{ form.replay }}%</strong></div>
+              <div class="flex justify-between"><span class="text-muted">再次裸听</span><strong class="text-primary">{{ form.replay }}%</strong></div>
               <USlider v-model="form.replay" :min="0" :max="100" />
             </div>
           </section>
@@ -113,27 +113,27 @@ function submit() {
               ['再裸听', '验证意义有没有留在耳朵里。'],
               ]"
               :key="rule[0]"
-              class="grid grid-cols-[2rem_1fr] gap-3 py-4 text-sm"
+              class="grid grid-cols-[2rem_1fr] gap-3 py-4"
             >
               <span class="font-display text-xl text-primary">{{ index + 1 }}</span>
-              <p class="opacity-70"><strong class="block text-inverted">{{ rule[0] }}</strong>{{ rule[1] }}</p>
+              <p class="opacity-70"><strong class="block">{{ rule[0] }}</strong>{{ rule[1] }}</p>
             </div>
           </div>
         </UCard>
 
         <section>
           <div class="mb-3 flex items-center justify-between">
-            <h2 class="font-display text-2xl text-highlighted">最近记录</h2>
+            <h2 class="font-display text-2xl">最近记录</h2>
             <UBadge color="neutral" variant="soft">{{ state.newsEntries.length }} 条</UBadge>
           </div>
           <UCard v-if="!recentEntries.length" variant="subtle">
-            <p class="text-sm leading-6 text-muted">还没有记录。今晚听完第一条新闻，就从这里开始。</p>
+            <p class="leading-6 text-muted">还没有记录。今晚听完第一条新闻，就从这里开始。</p>
           </UCard>
           <div v-else class="divide-y divide-muted border-y border-muted">
             <article v-for="entry in recentEntries" :key="entry.id" class="flex items-center justify-between gap-4 py-4">
               <div class="min-w-0">
                 <p class="text-xs text-muted">{{ entry.date }} · {{ entry.level }}</p>
-                <p class="mt-1 truncate font-display text-lg text-highlighted">{{ entry.title }}</p>
+                <p class="mt-1 truncate font-display text-lg">{{ entry.title }}</p>
               </div>
               <UBadge :color="entry.replay >= 70 ? 'success' : 'warning'" variant="soft">{{ entry.replay }}%</UBadge>
             </article>
