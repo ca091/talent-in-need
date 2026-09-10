@@ -7,6 +7,20 @@ export default defineNuxtConfig({
     '@nuxt/ui'
   ],
   css: ['~/assets/css/main.css'],
+  icon: {
+    provider: 'none',
+    clientBundle: {
+      scan: true,
+      icons: [
+        'lucide:chevron-left',
+        'lucide:chevron-right',
+        'lucide:chevrons-left',
+        'lucide:chevrons-right',
+        'lucide:ellipsis',
+        'lucide:upload',
+      ],
+    },
+  },
   sourcemap: false,
   devServer: {
     host: '0.0.0.0',
